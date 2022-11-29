@@ -1,0 +1,53 @@
+body {
+  background-color: #fff8bc; }
+
+:where(h1, h2, h3) {
+  border-width: 0 0 0 8px;
+  border-style: solid;
+  padding-left: 0.3em;
+  padding-right: 0.5em; }
+
+h1 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #fff;
+  border-color: #fff8bc;
+  background-color: #800000;
+  border-width: 0.1em 0 0.1em 0.1em;
+  padding-left: 0.3em;
+  padding-right: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em; }
+
+h2 {
+  font-size: 1.2em;
+  color: #000080;
+  border-color: #000080; }
+
+h3 {
+  font-size: 1em;
+  color: #006400;
+  border-color: #006400; }
+
+table {
+  border-width: 1px 2px 2px 1px;
+  border-style: solid;
+  border-color: #808080;
+  padding: 0;
+  background-color: #808080; }
+
+td {
+  background-color: #ffffef; }
+
+th {
+  text-align: center;
+  font-size: bold;
+  background-color: #a0b8cb; }
+  th,
+  th td {
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+    border-color: #808080;
+    padding: 4px; }
+
+/*# sourceMappingURL=style.css.map */

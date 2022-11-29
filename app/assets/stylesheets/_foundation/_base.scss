@@ -1,0 +1,61 @@
+body {
+  background-color: $buttermilk;
+}
+
+:where(h1, h2, h3) {
+  border-width: 0 0 0 8px;
+  border-style: solid;
+  padding-left: 0.3em;
+  padding-right: 0.5em;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.2em;
+  color: $white;
+  border-color: $buttermilk;
+  background-color: $maroon;
+  border-width: 0.1em 0 0.1em 0.1em;
+  padding-left: 0.3em;
+  padding-right: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+h2 {
+  font-size: 1.2em;
+  color: $navy;
+  border-color: $navy;
+}
+
+h3 {
+  font-size: 1em;
+  color: $darkgreen;
+  border-color: $darkgreen;
+}
+
+table {
+  border-width: 1px 2px 2px 1px;
+  border-style: solid;
+  border-color: $gray;
+  padding: 0;
+  background-color: $gray;
+}
+
+td {
+  background-color: $ivory;
+}
+
+th {
+  text-align: center;
+  font-size: bold;
+  background-color: $rockblue;
+
+  &,
+  td {
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+    border-color: $gray;
+    padding: 4px;
+  }
+}
