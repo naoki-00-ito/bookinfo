@@ -40,7 +40,7 @@ server.mount_proc("/list") { |req, res|
     # 選択された処理を実行する画面に移行する
     # ERBを、ERBHandlerを経由せずに直接呼び出して利用している
     if operation == "delete"
-      tamplate = ERB.new(File.read('delete.erb'))
+      template = ERB.new(File.read('delete.erb'))
     elsif operation == "edit"
       template = ERB.new(File.read('edit.erb'))
     end
@@ -124,6 +124,25 @@ server.mount_proc("/edit") { |req, res|
   # 処理の結果を表示する
   # ERBを、ERBHandlerを経由せずに直接呼び出して利用している
   template = ERB.new(File.read('edited.erb'))
+  res.body << template.result(binding)
+}
+
+# 削除の処理
+# "http://localhost:8099/delete" で呼び出される
+server.mount_proc("/delete") { |req, res| 
+  p req.query
+  # dbhを作成し、データベース'bookinfo_sqlite.db'に接続する
+  dbh = DBI.connect('DBI:SQLite3:../db/bookinfo_sqlite.db')
+
+  # テーブルのデータを削除する
+  dbh.do("delete from bookinfos where id='#{req.query['id']}';")
+
+  # データベースとの接続を終了する
+  dbh.disconnect
+
+  # 処理の結果を表示する
+  # ERBを、ERBHandlerを経由せずに直接呼び出して利用している
+  template = ERB.new(File.read('deleted.erb'))
   res.body << template.result(binding)
 }
 

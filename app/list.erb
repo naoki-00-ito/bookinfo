@@ -47,10 +47,10 @@
                 <% if name == 'id' then %>
                   <%# valueに選択したidの値の後に処理(.delete, .edit)を結合した文字列を設定する %>
                   <td>
-                    <input type="radio" name="operation" value=<%= "#{val}.delete" %>>
+                    <input type="radio" name="operation" value=<%= "#{val}.delete" %> />
                   </td>
                   <td>
-                    <input type="radio" name="operation" value=<%= "#{val}.edit" %>>
+                    <input type="radio" name="operation" value=<%= "#{val}.edit" %> />
                   </td>
                 <% end %>
                 <td>
