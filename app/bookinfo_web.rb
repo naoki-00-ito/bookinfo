@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*- 
+@string.force_encoding("utf-8") 
 require 'webrick'
 require 'erb'
 require 'rubygems'
@@ -47,6 +48,36 @@ server.mount_proc("/list") { |req, res|
     res.body << template.result(binding)
   else # データが選択されていないなど
     template = ERB.new(File.read('noselected.erb'))
+    res.body << template.result(binding)
+  end
+}
+
+# 登録の処理
+# "http://localhost:8099/entry" で呼び出される
+server.mount_proc("/entry") { |req, res| 
+  p req.query
+  # dbhを作成し、データベース'bookinfo_sqlite.db'に接続する
+  dbh = DBI.connect('DBI:SQLite3:../db/bookinfo_sqlite.db')
+
+  # idが使われていたら登録できない
+  rows = dbh.select_one("select * from bookinfos where id='#{req.query['id']}';")
+  if rows then
+    # データベースとの接続を終了する
+    dbh.disconnect
+
+    # 処理の結果を表示する
+    # ERBを、ERBHandlerを経由せずに直接呼び出して利用している
+    template = ERB.new(File.read('noentried.erb'))
+    res.body << template.result(binding)
+  else
+    # テーブルにデータを追加する
+    dbh.do("insert into bookinfos values('#{req.query['id']}','#{req.query['title']}','#{req.query['author']}','#{req.query['page']}','#{req.query['publish_date']}');")
+    # データベースとの接続を終了する
+    dbh.disconnect
+
+    # 処理の結果を表示する
+    # ERBを、ERBHandlerを経由せずに直接呼び出して利用している
+    template = ERB.new(File.read('entried.erb'))
     res.body << template.result(binding)
   end
 }
