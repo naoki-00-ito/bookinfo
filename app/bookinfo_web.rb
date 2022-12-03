@@ -111,6 +111,22 @@ server.mount_proc("/retrieve") { |req, res|
   res.body << template.result(binding)
 }
 
+# 修正の処理
+# "http://localhost:8099/edit" で呼び出される
+server.mount_proc("/edit") { |req, res| 
+  p req.query
+  # dbhを作成し、データベース'bookinfo_sqlite.db'に接続する
+  dbh = DBI.connect('DBI:SQLite3:../db/bookinfo_sqlite.db')
+  # テーブルのデータを更新する
+  dbh.do("update bookinfos set id='#{req.query['id']}',title='#{req.query['title']}',author='#{req.query['author']}',page='#{req.query['page']}',publish_date='#{req.query['publish_date']}' where id='#{req.query['id']}';")
+  # データベースとの接続を終了する
+  dbh.disconnect
+  # 処理の結果を表示する
+  # ERBを、ERBHandlerを経由せずに直接呼び出して利用している
+  template = ERB.new(File.read('edited.erb'))
+  res.body << template.result(binding)
+}
+
 # Ctrl-C割り込みがあった場合にサーバーを停止する処理を登録しておく
 trap(:INT) do
   server.shutdown

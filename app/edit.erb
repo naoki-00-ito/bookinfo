@@ -1,0 +1,53 @@
+<%# -*- coding: utf-8 -*- %>
+<% require 'rubygems' %>
+<% require 'DBI' %>
+
+<%# dbhを作成し、データベース'bookinfo_sqlite.db'に接続する %>
+<% dbh = DBI.connect('DBI:SQLite3:../db/bookinfo_sqlite.db') %>
+
+<%# テーブルから修正対象データを読み込んで表示する %>
+<%# select文の実行 %>
+<% sth = dbh.execute("select * from bookinfos where id=\'#{target_id}\';") %>
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/stylesheets/style.css" />
+    <title>蔵書管理</title>
+  </head>
+  <body>
+    <main class="l-main">
+      <h1>蔵書管理</h1>
+      <h2>蔵書データの修正</h2>
+      <p>処理する蔵書データを選択してください
+      <a href="list.erb">蔵書データの表示</a>|
+      <a href="index.html">メニュー画面に戻る</a>
+      </p>
+      <hr />
+    
+      <%# 修正データを表示する アクションはedit %>
+      <form method="post" action="edit">
+        <input type="hidden" name="id" value="<%= target_id %>" />
+        <table>
+          <%# select文の実行結果のidが指定されたデータを取り出し、繰り返し処理をする %>
+          <% sth.each do |row| %>
+            <th>項目名</th>
+            <th>修正データ</th>
+            <% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
+              <tr>
+                <td><%= name %></td>
+                <td><input name="<%= name %>" value="<%= row[name] %>" size="60" /></td>
+              </tr>
+            <% end %>
+          <% end %>
+        </table>
+        <input type="submit" value="修正を実行">
+      </form>
+      <hr />
+      
+    </main>
+  </body>
+</html>
