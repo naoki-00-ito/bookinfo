@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*- 
-@string.force_encoding("utf-8") 
 require 'webrick'
 require 'erb'
 require 'rubygems'
@@ -80,6 +79,36 @@ server.mount_proc("/entry") { |req, res|
     template = ERB.new(File.read('entried.erb'))
     res.body << template.result(binding)
   end
+}
+
+# 検索の処理
+# "http://localhost:8099/retrieve" で呼び出される
+server.mount_proc("/retrieve") { |req, res| 
+  p req.query
+
+  # 検索条件の整理
+  a = ['id', 'title', 'author', 'page', 'publish_date']
+  # 問合せ条件のある要素以外を削除
+  a.delete_if{ |name|
+    req.query[name] == ""
+  }
+
+  if a.empty?
+    where_data = ""
+  else
+    # 残った要素を検索条件文字列に変換
+    a.map! { |name|
+      "#{name}='#{req.query[name]}'"
+    }
+    # 要素があるときは、where句に直す
+    # (現状、項目ごとの完全一致のorだけ)
+    where_data = "where " + a.join(' or ')
+  end
+
+  # 処理の結果を表示する
+  # ERBを、ERBHandlerを経由せずに直接呼び出して利用している
+  template = ERB.new(File.read('retrieved.erb'))
+  res.body << template.result(binding)
 }
 
 # Ctrl-C割り込みがあった場合にサーバーを停止する処理を登録しておく

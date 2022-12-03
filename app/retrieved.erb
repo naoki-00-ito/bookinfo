@@ -1,0 +1,77 @@
+<%# -*- coding: utf-8 -*- %>
+<% require 'rubygems' %>
+<% require 'DBI' %>
+
+<%# dbhを作成し、データベース'bookinfo_sqlite.db'に接続する %>
+<% dbh = DBI.connect('DBI:SQLite3:../db/bookinfo_sqlite.db') %>
+
+<%# 該当するレコードを配列に収集する %>
+<% rows = dbh.select_all("select * from bookinfos #{where_data};") %>
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/stylesheets/style.css" />
+    <title>蔵書管理</title>
+  </head>
+  <body>
+    <main class="l-main">
+      <h1>蔵書管理</h1>
+
+      <% unless rows.size > 0 then %>
+        <%# 検索結果がないとき %>
+        <h2>該当データがありません</h2>
+        <p>検索条件を見直してから実行してください
+        <a href="list.erb">蔵書データの表示</a>|
+        <a href="index.html">メニュー画面に戻る</a>
+        </p>
+
+      <% else %>
+        <h2>検索結果の表示</h2>
+        <p>処理する蔵書データを選択してください
+        <a href="list.erb">蔵書データの表示(検索の解除)</a>|
+        <a href="index.html">メニュー画面に戻る</a>
+        </p>
+        <hr />
+      
+        <%# 修正データを表示する アクションはlist %>
+        <form method="post" action="list">
+          <table>
+            <%# テーブルの項目名を取り出して表の項目行を表示する %>
+            <tr>
+              <th>削除</th>
+              <th>修正</th>
+              <% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
+                <th><%= name %></th>
+              <% end %>
+            </tr>
+
+            <%# select文の実行結果を１件ずつrowに取り出し、繰り返し処理をする %>
+            <% dbh.select_all("select * from bookinfos #{where_data};") do |row| %>
+              <tr>
+                <%# each_with_nameメソッドで値と項目名を１件ずつ取り出して表示する %>
+                <% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
+                  <% if name == 'id' then %>
+                    <%# valueに選択したidの値の後に処理(.delete, .edit)を結合した文字列を設定する %>
+                    <td><input type="radio" name="operation" value=<%="#{row[name]}.delete"%> /></td>
+                    <td><input type="radio" name="operation" value=<%="#{row[name]}.edit"%> /></td>
+                  <% end %>
+                  <td><%= row[name].to_s %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </table>
+          <input type="submit" value="選択した処理を実行">
+          <hr />
+        </form>
+      <% end %>
+      
+    </main>
+  </body>
+</html>
+
+<%# データベースとの接続を終了する %>
+<% dbh.disconnect %>

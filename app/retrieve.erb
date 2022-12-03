@@ -1,0 +1,44 @@
+<%# -*- coding: utf-8 -*- %>
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/stylesheets/style.css" />
+    <title>蔵書管理</title>
+  </head>
+  <body>
+    <main class="l-main">
+      <h1>蔵書管理</h1>
+      <h2>蔵書データの検索</h2>
+      <p>検索条件を入力してください|
+      <a href="list.erb">蔵書データの表示</a>|
+      <a href="index.html">メニュー画面に戻る</a>
+      </p>
+      <hr />
+      
+      <%# 検索対象データを入力するフォームを表示する アクションはretrieve %>
+      <form method="post" action="retrieve">
+        <table>
+          <%# テーブルの項目名を取り出して表の項目行を表示する %>
+          <tr>
+            <th>項目名</th>
+            <th>検索データ</th>
+          </tr>
+
+          <% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
+            <tr>
+              <td><%= name %></td>
+              <td>
+                <input type="text" name="<%= name %>" size="60">
+              </td>
+            </tr>
+          <% end %>
+        </table>
+        <input type="submit" value="検索を実行">
+      </form>
+      <hr />
+    </main>
+  </body>
+</html>
